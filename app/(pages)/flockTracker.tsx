@@ -237,7 +237,7 @@ const data = {
                   <View key={item.id} style={styles.listItem}>
                      <Text style={styles.listText}>📅 {item.date}</Text>
                      <Text style={styles.listText}>⚖️ {item.totalWeight} kg</Text>
-                     <Text style={styles.listText}>🍚 {item.feedConsumed} kg</Text>
+                     <Text style={styles.listText}>🍚 {item.quantity} kg</Text>
                     <TouchableOpacity onPress={() => handleDelete(item.id)}>
                       <Text style={{color: COLORS.white, backgroundColor: COLORS.primary, padding: 7, borderRadius: 20}}>-</Text>
                     </TouchableOpacity>
