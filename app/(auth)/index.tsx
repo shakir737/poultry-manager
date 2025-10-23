@@ -17,7 +17,7 @@ import { Image } from "expo-image";
 
 import { authStyles } from "@/assets/styles/auth.style";
 import { COLORS } from "@/constants/color";
-import { getUser } from "@/utils/storage";
+import { getUser, saveCurrentUser } from "@/utils/storage";
 
 export default function  page  ()  {
   const router = useRouter();
@@ -38,6 +38,7 @@ export default function  page  ()  {
     const result = await getUser(email, password);
     if(result){
      Alert.alert("Success", "User Login: successfull");
+     await saveCurrentUser(result);
      setLoading(false)
      router.push("/(tabs)/home");
     } else {

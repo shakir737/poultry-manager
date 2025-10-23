@@ -5,6 +5,7 @@ const EXPENSES_KEY = '@poultry_expenses';
 const RESOURCE_KEY = '@poultry_resource';
 const ACTIVITY_KET = '@poultry_activity';
 const USER_KEY = '@poultry_user';
+const CURRENT_USER_KEY = '@poultry_currentUser';
 
 interface Flocks {
   id: string;
@@ -195,7 +196,29 @@ export const saveUsers = async (users: any) => {
   }
 };
 
-export const getUser = async (email: string, password: any) => {
+export const saveCurrentUser = async (users: any) => {
+   try {
+    const result = await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify(users));
+     return result;
+   } catch (error) {
+     console.error('Error saving current user:', error);
+     return false;
+   }
+ };
+
+ export const getCurrentUser = async () => {
+   try{
+  const users = await AsyncStorage.getItem(CURRENT_USER_KEY)
+  const user = users ? JSON.parse(users) : []
+ 
+    return user
+ } catch (error) {
+     console.error('Error getting users:', error);
+     return [];
+   }
+ }
+
+export const getUser = async (email: string, password: string) => {
   try{
  const users = await AsyncStorage.getItem(USER_KEY)
  const user = users ? JSON.parse(users) : []
@@ -206,7 +229,6 @@ export const getUser = async (email: string, password: any) => {
   email: string;
   password: string
   }) => Object.email === email && Object.password === password) || null;
-
    return result
 } catch (error) {
     console.error('Error getting users:', error);

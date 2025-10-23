@@ -26,7 +26,7 @@ const calculateFlockStats = (data: any) => {
   const sortedData = [...data].sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate());
 
   // 1. Total Feed Consumed
-  const totalFeed = sortedData.reduce((sum, item) => sum + parseFloat(item.feedConsumed), 0);
+  const totalFeed = sortedData.reduce((sum, item) => sum + parseFloat(item.quantity), 0);
  
 
   // 2. Total Weight Gained
@@ -108,6 +108,7 @@ export default function FlockTracker() {
   // Recalculate stats whenever flockData changes
   useEffect(() => {
     setStats(calculateFlockStats(flockData));
+    loadFlockData();
     calculateData()
   }, [flockData]);
 

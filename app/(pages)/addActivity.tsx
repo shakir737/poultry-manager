@@ -14,19 +14,28 @@ import {
 } from "react-native";
 
  interface Activity {
+  category: string;
+  resource: string;
+  unit: string
   totalWeight: string;
-  feedConsumed: string;
+  quantity: string;
   date: string;
   died: string;
  }
 export default function page() {
    const params = useLocalSearchParams();
+   const[category, setCategory] = useState();
+   const [unit, setUnit] = useState();
+   const [resource, setResource] = useState();
    const { itemId, flockId } = params
     const [editMode, setEditMode] = useState<Activity>({
+        category: "",
+        resource: "",
+        unit: "",
         totalWeight: "",
-        feedConsumed: "",
-       date: new Date().toISOString().split("T")[0],
-       died: "",
+        quantity: "",
+        date: new Date().toISOString().split("T")[0],
+        died: "",
    })
   useEffect(() => {
     loadResource();
@@ -49,15 +58,18 @@ export default function page() {
     setEditMode(prevData => ({ ...prevData, [key]: value }));
   };
   const handleSave = async () => {
-    if (!editMode.feedConsumed || !editMode.totalWeight) {
+    if (!editMode.quantity || !editMode.totalWeight) {
       Alert.alert("Error", "Please fill in all required fields");
       return;
     }
 
     const resourceData = {
       flockId: flockId,
+      category: category,
+      resource: resource,
+      unit: unit,
       totalWeight: editMode.totalWeight,
-      feedConsumed: editMode.feedConsumed,
+      quantity: editMode.quantity,
       date: editMode.date,
       died: editMode.died,
     };
@@ -104,13 +116,13 @@ export default function page() {
           placeholder="YYYY-MM-DD"
         />
         <Text style={styles.label}>
-        Total feed Consumed <Text style={styles.required}>*</Text>
+        Quantity Of Resource <Text style={styles.required}>*</Text>
                 </Text>
          <TextInput
             style={styles.input}
-            placeholder="Feed Consumed (kg)"
-            value={editMode.feedConsumed}
-            onChangeText={text => handleInputChange("feedConsumed", text)}
+            placeholder="Quantity Of Resource"
+            value={editMode.quantity}
+            onChangeText={text => handleInputChange("quantity", text)}
             keyboardType="numeric"
              placeholderTextColor={COLORS.primary}
           />
