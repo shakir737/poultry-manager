@@ -14,28 +14,49 @@ import {
   View,
 } from "react-native";
 
+import { addUsers } from "@/utils/storage";
 import { Ionicons } from "@expo/vector-icons";
 
+interface Authentication {
+  name: string;
+  companyName: string;
+  email: string;
+  password: string;
+}
 export default function page  () {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [editMode, setEditMode] = useState({
+    name: "",
+    companyName: "",
+    email: "",
+    password: "",
+  })
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pendingVerification, setPendingVerification] = useState(false);
 
   const handleSignUp = async () => {
-    if (!email || !password) return Alert.alert("Error", "Please fill in all fields");
-    if (password.length < 6) return Alert.alert("Error", "Password must be at least 6 characters");
+    if (editMode.name === "" || editMode.companyName === "" || editMode.email === "" || editMode.password === "") return Alert.alert("Error", "Please fill in all fields");
+  setLoading(true);
+    const user = {
+    name: editMode.name,
+    email: editMode.email,
+    companyName: editMode.companyName,
+    password: editMode.password
+   }
 
-    
-
-   
-
+  await addUsers(user);
+  Alert.alert("Success", "User Registration: successfull");
+  setLoading(false)
+  router.push("/(tabs)/home");
    
   };
 
-  
+  const handleInputChange = (key: keyof Authentication, value: string) => {
+    setEditMode(prevData => ({ ...prevData, [key]: value }));
+  };
 
   return (
     <View style={authStyles.container}>
@@ -58,16 +79,35 @@ export default function page  () {
           </View>
 
           <Text style={authStyles.title}>Create Account</Text>
+     <View style={authStyles.formContainer}>
+          <View style={authStyles.inputContainer}>
+                    <TextInput
+                     style={authStyles.textInput}
+                     value={editMode.name}
+                     onChangeText={text => handleInputChange('name', text)}
+                     placeholderTextColor={COLORS.textLight}
+                     placeholder="Enter your name"
+                     />
+          </View>
 
-          <View style={authStyles.formContainer}>
+           <View style={authStyles.inputContainer}>
+                    <TextInput
+                     style={authStyles.textInput}
+                     value={editMode.companyName}
+                     onChangeText={text => handleInputChange('companyName', text)}
+                     placeholderTextColor={COLORS.textLight}
+                     placeholder="Enter your company name"
+                     />
+          </View> 
+         
             {/* Email Input */}
             <View style={authStyles.inputContainer}>
               <TextInput
                 style={authStyles.textInput}
                 placeholder="Enter email"
                 placeholderTextColor={COLORS.textLight}
-                value={email}
-                onChangeText={setEmail}
+                value={editMode.email}
+                onChangeText={text => handleInputChange("email", text)}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
@@ -79,8 +119,8 @@ export default function page  () {
                 style={authStyles.textInput}
                 placeholder="Enter password"
                 placeholderTextColor={COLORS.textLight}
-                value={password}
-                onChangeText={setPassword}
+                value={editMode.password}
+                onChangeText={text => handleInputChange("password", text)}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
               />
@@ -109,7 +149,7 @@ export default function page  () {
             </TouchableOpacity>
 
             {/* Sign In Link */}
-            <TouchableOpacity style={authStyles.linkContainer} onPress={() => router.push("/(tabs)/home")}>
+            <TouchableOpacity style={authStyles.linkContainer} onPress={() => router.push("/(auth)")}>
               <Text style={authStyles.linkText}>
                 Already have an account? <Text style={authStyles.link}>Sign In</Text>
               </Text>

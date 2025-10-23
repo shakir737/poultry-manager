@@ -4,6 +4,7 @@ const FLOCKS_KEY = '@poultry_flocks';
 const EXPENSES_KEY = '@poultry_expenses';
 const RESOURCE_KEY = '@poultry_resource';
 const ACTIVITY_KET = '@poultry_activity';
+const USER_KEY = '@poultry_user';
 
 interface Flocks {
   id: string;
@@ -156,6 +157,62 @@ export const getActivities = async () => {
     return [];
   }
 };
+
+export const getUsers = async () => {
+  try {
+    const users = await AsyncStorage.getItem(USER_KEY);
+    return users ? JSON.parse(users) : [];
+  } catch (error) {
+    console.error('Error getting users:', error);
+    return [];
+  }
+};
+
+export const addUsers = async (user: any) => {
+  try {
+    const users = await getUsers();
+    const newUser = {
+      ...user,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+    };
+    users.push(newUser);
+    await saveUsers(users);
+    return newUser;
+  } catch (error) {
+    console.error('Error adding user:', error);
+    return null;
+  }
+};
+
+export const saveUsers = async (users: any) => {
+  try {
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(users));
+    return true;
+  } catch (error) {
+    console.error('Error saving users:', error);
+    return false;
+  }
+};
+
+export const getUser = async (email: string, password: any) => {
+  try{
+ const users = await AsyncStorage.getItem(USER_KEY)
+ const user = users ? JSON.parse(users) : []
+ const result = user.find((Object: { 
+  id: string;
+  name: string;
+  companyName: string;
+  email: string;
+  password: string
+  }) => Object.email === email && Object.password === password) || null;
+
+   return result
+} catch (error) {
+    console.error('Error getting users:', error);
+    return [];
+  }
+}
 
 export const addResource = async (resource: any) => {
   try {

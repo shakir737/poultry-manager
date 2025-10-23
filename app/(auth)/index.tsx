@@ -17,6 +17,7 @@ import { Image } from "expo-image";
 
 import { authStyles } from "@/assets/styles/auth.style";
 import { COLORS } from "@/constants/color";
+import { getUser } from "@/utils/storage";
 
 export default function  page  ()  {
   const router = useRouter();
@@ -33,10 +34,17 @@ export default function  page  ()  {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
-
-    if (!loading) return;
-
     setLoading(true);
+    const result = await getUser(email, password);
+    if(result){
+     Alert.alert("Success", "User Login: successfull");
+     setLoading(false)
+     router.push("/(tabs)/home");
+    } else {
+     Alert.alert("Error", "User Login: Failed");
+     setLoading(false)
+    }
+    
 
 }
 
